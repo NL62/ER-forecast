@@ -1,0 +1,52 @@
+# Prometheus Configuration
+# Metrics collection for ER Patient Forecast MLOps System
+
+global:
+  scrape_interval: 15s      # Scrape targets every 15 seconds
+  evaluation_interval: 15s  # Evaluate rules every 15 seconds
+  external_labels:
+    monitor: 'er-forecast-mlops'
+    environment: 'on-premises'
+
+# Storage retention: configured via command line flag in docker-compose.yml
+# Default: 30 days (--storage.tsdb.retention.time)
+
+# Scrape configurations
+scrape_configs:
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: 'prometheus'
+          component: 'monitoring'
+
+  # Custom application metrics exposed by Prefect worker
+  # This includes training metrics, prediction metrics, and model performance
+  - job_name: 'mlops-app-metrics'
+    scrape_interval: 15s
+    scrape_timeout: 10s
+    static_configs:
+      - targets: ['prefect_worker:8000']
+        labels:
+          service: 'prefect_worker'
+          component: 'training_and_prediction'
+          environment: 'on-premises'
+
+  # MLflow tracking server (if it exposes metrics)
+  - job_name: 'mlflow'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['mlflow:5050']
+        labels:
+          service: 'mlflow'
+          component: 'experiment_tracking'
+
+  # Prefect server metrics (if available)
+  - job_name: 'prefect-server'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['prefect:4200']
+        labels:
+          service: 'prefect'
+          component: 'orchestration'

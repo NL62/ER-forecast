@@ -1,0 +1,88 @@
+services:
+  # ==========================================================================
+  # PREDICTION SERVICE - ER Patient Forecast Predictions
+  # ==========================================================================
+  # Connects to existing MLflow, Grafana, and other services on host machine
+  # ==========================================================================
+  prediction:
+    container_name: er-prediction
+    build:
+      context: .
+      dockerfile: Dockerfile.prediction
+    environment:
+      # MLflow configuration (connects to host MLflow)
+      - MLFLOW_TRACKING_URI=${MLFLOW_TRACKING_URI:-http://host.docker.internal:5050}
+
+      # MinIO/S3 configuration for MLflow artifacts
+      - MLFLOW_S3_ENDPOINT_URL=${MLFLOW_S3_ENDPOINT_URL:-http://host.docker.internal:9000}
+      - AWS_ACCESS_KEY_ID=${MINIO_ACCESS_KEY}
+      - AWS_SECRET_ACCESS_KEY=${MINIO_SECRET_KEY}
+
+      # Hospital location (Uppsala Academic Hospital by default)
+      - HOSPITAL_LATITUDE=${HOSPITAL_LATITUDE:-59.6099}
+      - HOSPITAL_LONGITUDE=${HOSPITAL_LONGITUDE:-16.5448}
+
+      # SQL Server database connection for data fetching and writing predictions
+      - DB_CONNECTION_URL=${DB_CONNECTION_URL:-}
+      - DB_STORED_PROCEDURE=${DB_STORED_PROCEDURE:-[getVPB_Data]}
+
+      # Python configuration
+      - PYTHONUNBUFFERED=1
+    volumes:
+      # Mount data directories
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./logs:/app/logs
+      - ./config:/app/config
+    extra_hosts:
+      # Allow container to access host services (Windows/Mac)
+      - "host.docker.internal:host-gateway"
+    network_mode: bridge
+    restart: "no" # Run once and exit
+
+  # ==========================================================================
+  # TRAINING SERVICE - ER Patient Forecast Model Training
+  # ==========================================================================
+  # Connects to existing MLflow, Grafana, and other services on host machine
+  # ==========================================================================
+  training:
+    container_name: er-training
+    build:
+      context: .
+      dockerfile: Dockerfile.training
+    environment:
+      # MLflow configuration (connects to host MLflow)
+      - MLFLOW_TRACKING_URI=${MLFLOW_TRACKING_URI:-http://host.docker.internal:5050}
+
+      # MinIO/S3 configuration for MLflow artifacts
+      - MLFLOW_S3_ENDPOINT_URL=${MLFLOW_S3_ENDPOINT_URL:-http://host.docker.internal:9000}
+      - AWS_ACCESS_KEY_ID=${MINIO_ACCESS_KEY}
+      - AWS_SECRET_ACCESS_KEY=${MINIO_SECRET_KEY}
+
+      # Hospital location (Uppsala Academic Hospital by default)
+      - HOSPITAL_LATITUDE=${HOSPITAL_LATITUDE:-59.6099}
+      - HOSPITAL_LONGITUDE=${HOSPITAL_LONGITUDE:-16.5448}
+
+      # SQL Server database connection for data fetching and writing predictions
+      - DB_CONNECTION_URL=${DB_CONNECTION_URL:-}
+      - DB_STORED_PROCEDURE=${DB_STORED_PROCEDURE:-[getVPB_Data]}
+
+      # Training parameters (can be overridden)
+      - N_OPTUNA_TRIALS=${N_OPTUNA_TRIALS:-300}
+      - MAE_THRESHOLD=${MAE_THRESHOLD:-15.0}
+
+      # Python configuration
+      - PYTHONUNBUFFERED=1
+    volumes:
+      # Mount data directories
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./logs:/app/logs
+      - ./config:/app/config
+      - ./plots:/app/plots
+    extra_hosts:
+      # Allow container to access host services (Windows/Mac)
+      - "host.docker.internal:host-gateway"
+    network_mode: bridge
+    restart: "no" # Run once and exit
+

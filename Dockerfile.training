@@ -1,0 +1,59 @@
+# Dockerfile for ER Patient Forecast - Training Flow
+FROM python:3.11-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies including ODBC driver for SQL Server
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpq-dev \
+    curl \
+    gnupg \
+    unixodbc-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Microsoft ODBC Driver for SQL Server
+# python:3.11-slim is based on Debian 12 (bookworm)
+RUN curl https://packages.microsoft.com/keys/microsoft.asc \
+    | gpg --dearmor -o /usr/share/keyrings/microsoft.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/debian/12/prod bookworm main" \
+        > /etc/apt/sources.list.d/mssql-release.list && \
+    apt-get update && \
+    ACCEPT_EULA=Y apt-get install -y msodbcsql17 && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install uv for fast dependency management
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="/root/.local/bin:$PATH"
+
+# Copy project files for dependency installation
+COPY pyproject.toml uv.lock README.md ./
+
+# Install dependencies with uv
+RUN uv sync --frozen --no-dev
+
+# Copy source code and flows
+COPY src/ ./src/
+COPY flows/ ./flows/
+COPY config/ ./config/
+
+# Create necessary directories
+RUN mkdir -p /app/data/raw \
+    /app/data/processed \
+    /app/models \
+    /app/logs \
+    /app/plots
+
+# Set Python path and ensure venv binaries are in PATH
+ENV PYTHONPATH=/app
+ENV PATH="/app/.venv/bin:$PATH"
+
+# Set default environment variables (can be overridden)
+ENV MLFLOW_TRACKING_URI=http://host.docker.internal:5050
+ENV HOSPITAL_LATITUDE=59.6099
+ENV HOSPITAL_LONGITUDE=16.5448
+
+# Default command runs the training flow
+CMD ["uv", "run", "python", "-m", "flows.training_flow"]
+

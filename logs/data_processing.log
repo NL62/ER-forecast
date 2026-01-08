@@ -1,0 +1,92 @@
+2025-09-30 19:16:21 - root - INFO - Logging configured successfully
+2025-09-30 19:16:21 - root - INFO - Log level: INFO
+2025-09-30 19:16:21 - root - INFO - Console logging: enabled
+2025-09-30 19:16:21 - root - INFO - File logging: enabled (logs/data_processing.log)
+2025-09-30 19:16:21 - src.data.preprocessing - INFO - Loading raw data from: data/raw/emergency_visits.csv
+2025-09-30 19:16:22 - src.data.preprocessing - INFO - Successfully loaded 261,537 rows from data/raw/emergency_visits.csv
+2025-09-30 19:16:22 - src.data.preprocessing - INFO - Removing duplicates from 261,537 rows
+2025-09-30 19:16:22 - src.data.preprocessing - WARNING - Found 189,005 duplicate rows (72.27%)
+2025-09-30 19:16:22 - src.data.preprocessing - INFO - After removing duplicates: 72,532 rows remain
+2025-09-30 19:16:22 - src.data.preprocessing - INFO - Aggregating patient visits to daily counts
+2025-09-30 19:16:22 - src.data.preprocessing - INFO - Aggregated to 1,209 days
+2025-09-30 19:16:22 - src.data.preprocessing - INFO - Date range: 2022-05-24 00:00:00 to 2025-09-23 00:00:00
+2025-09-30 19:16:22 - src.data.preprocessing - INFO - Average patients per day: 60.0
+2025-09-30 19:16:22 - src.data.preprocessing - INFO - Min patients per day: 2
+2025-09-30 19:16:22 - src.data.preprocessing - INFO - Max patients per day: 104
+2025-09-30 19:16:22 - src.data.preprocessing - INFO - Checking for missing dates in time series
+2025-09-30 19:16:22 - src.data.preprocessing - WARNING - Found 10 missing dates (0.82%)
+2025-09-30 19:16:22 - src.data.preprocessing - INFO - Filled 10 missing dates with 0 patient counts
+2025-09-30 19:16:22 - src.data.preprocessing - INFO - Final time series: 1,219 days from 2022-05-24 to 2025-09-23
+2025-09-30 19:16:22 - src.data.weather_integration - INFO - Fetching weather data from 2022-05-24 to 2025-09-23
+2025-09-30 19:16:22 - src.data.weather_integration - INFO - Location: lat=59.6099, lon=16.5448
+2025-09-30 19:16:22 - src.data.weather_integration - INFO - Successfully fetched weather data: 1219 days
+2025-09-30 19:16:22 - src.data.weather_integration - INFO - Merging weather data with patient visit data
+2025-09-30 19:16:22 - src.data.weather_integration - INFO - Patient data range: 2022-05-24 to 2025-09-23
+2025-09-30 19:16:22 - src.data.weather_integration - INFO - Weather data range: 2022-05-24 to 2025-09-23
+2025-09-30 19:16:22 - src.data.weather_integration - INFO - No missing weather data - perfect merge!
+2025-09-30 19:16:22 - src.data.feature_engineering - INFO - Starting comprehensive feature engineering pipeline
+2025-09-30 19:16:22 - src.data.feature_engineering - INFO - Adding date and time features with cyclic encoding
+2025-09-30 19:16:22 - src.data.feature_engineering - INFO - Added 12 date/time features
+2025-09-30 19:16:22 - src.data.feature_engineering - INFO - Adding weekend indicator
+2025-09-30 19:16:22 - src.data.feature_engineering - INFO - Weekend days: 348/1219 (28.5%)
+2025-09-30 19:16:22 - src.data.feature_engineering - INFO - Adding rolling statistics for windows: [3, 14, 30]
+2025-09-30 19:16:22 - src.data.feature_engineering - INFO - Added 6 rolling statistics features
+2025-09-30 19:16:22 - src.data.feature_engineering - INFO - Adding Fourier features for periods: [365.25, 7, 3.5, 2.3]
+2025-09-30 19:16:22 - src.data.feature_engineering - INFO - Added 14 Fourier features
+2025-09-30 19:16:22 - src.data.feature_engineering - INFO - Adding lag features: [1, 2, 3, 7, 14, 21, 28]
+2025-09-30 19:16:22 - src.data.feature_engineering - INFO - Added 7 lag features
+2025-09-30 19:16:22 - src.data.feature_engineering - INFO - Adding change features
+2025-09-30 19:16:22 - src.data.feature_engineering - INFO - Added change features
+2025-09-30 19:16:22 - src.data.feature_engineering - INFO - Feature engineering complete: added 42 features
+2025-09-30 19:16:22 - src.data.feature_engineering - INFO - Final shape: (1219, 49)
+2025-09-30 19:16:22 - src.data.feature_engineering - INFO - Removing rows with NaN values from feature engineering
+2025-09-30 19:16:22 - src.data.feature_engineering - INFO - Found NaN values in 15 columns: ['patients_3d_avg', 'patients_3d_std', 'patients_14d_avg', 'patients_14d_std', 'patients_30d_avg']...
+2025-09-30 19:16:22 - src.data.feature_engineering - INFO - Rows with NaN: 28/1219 (2.3%)
+2025-09-30 19:16:22 - src.data.feature_engineering - INFO - Removed 28 rows with NaN values
+2025-09-30 19:16:22 - src.data.feature_engineering - INFO - Remaining rows: 1191
+2025-09-30 19:43:06 - root - INFO - Logging configured successfully
+2025-09-30 19:43:06 - root - INFO - Log level: INFO
+2025-09-30 19:43:06 - root - INFO - Console logging: enabled
+2025-09-30 19:43:06 - root - INFO - File logging: enabled (logs/data_processing.log)
+2025-09-30 19:43:06 - src.data.preprocessing - INFO - Loading raw data from: data/raw/emergency_visits.csv
+2025-09-30 19:43:06 - src.data.preprocessing - INFO - Successfully loaded 261,533 rows from data/raw/emergency_visits.csv
+2025-09-30 19:43:06 - src.data.preprocessing - INFO - Removing duplicates from 261,533 rows
+2025-09-30 19:43:06 - src.data.preprocessing - WARNING - Found 189,003 duplicate rows (72.27%)
+2025-09-30 19:43:06 - src.data.preprocessing - INFO - After removing duplicates: 72,530 rows remain
+2025-09-30 19:43:06 - src.data.preprocessing - INFO - Aggregating patient visits to daily counts
+2025-09-30 19:43:06 - src.data.preprocessing - INFO - Aggregated to 1,208 days
+2025-09-30 19:43:06 - src.data.preprocessing - INFO - Date range: 2022-05-24 00:00:00 to 2025-09-22 00:00:00
+2025-09-30 19:43:06 - src.data.preprocessing - INFO - Average patients per day: 60.0
+2025-09-30 19:43:06 - src.data.preprocessing - INFO - Min patients per day: 26
+2025-09-30 19:43:06 - src.data.preprocessing - INFO - Max patients per day: 104
+2025-09-30 19:43:06 - src.data.preprocessing - INFO - Checking for missing dates in time series
+2025-09-30 19:43:06 - src.data.preprocessing - WARNING - Found 10 missing dates (0.82%)
+2025-09-30 19:43:06 - src.data.preprocessing - INFO - Filled 10 missing dates with 0 patient counts
+2025-09-30 19:43:06 - src.data.preprocessing - INFO - Final time series: 1,218 days from 2022-05-24 to 2025-09-22
+2025-09-30 19:43:06 - src.data.weather_integration - INFO - Fetching weather data from 2022-05-24 to 2025-09-22
+2025-09-30 19:43:06 - src.data.weather_integration - INFO - Location: lat=59.6099, lon=16.5448
+2025-09-30 19:43:06 - src.data.weather_integration - INFO - Successfully fetched weather data: 1218 days
+2025-09-30 19:43:06 - src.data.weather_integration - INFO - Merging weather data with patient visit data
+2025-09-30 19:43:06 - src.data.weather_integration - INFO - Patient data range: 2022-05-24 to 2025-09-22
+2025-09-30 19:43:06 - src.data.weather_integration - INFO - Weather data range: 2022-05-24 to 2025-09-22
+2025-09-30 19:43:06 - src.data.weather_integration - INFO - No missing weather data - perfect merge!
+2025-09-30 19:43:06 - src.data.feature_engineering - INFO - Starting comprehensive feature engineering pipeline
+2025-09-30 19:43:06 - src.data.feature_engineering - INFO - Adding date and time features with cyclic encoding
+2025-09-30 19:43:06 - src.data.feature_engineering - INFO - Added 12 date/time features
+2025-09-30 19:43:06 - src.data.feature_engineering - INFO - Adding weekend indicator
+2025-09-30 19:43:06 - src.data.feature_engineering - INFO - Weekend days: 344/1208 (28.5%)
+2025-09-30 19:43:06 - src.data.feature_engineering - INFO - Adding rolling statistics for windows: [3, 14, 30]
+2025-09-30 19:43:06 - src.data.feature_engineering - INFO - Added 6 rolling statistics features
+2025-09-30 19:43:06 - src.data.feature_engineering - INFO - Adding Fourier features for periods: [365.25, 7, 3.5, 2.3]
+2025-09-30 19:43:06 - src.data.feature_engineering - INFO - Added 14 Fourier features
+2025-09-30 19:43:06 - src.data.feature_engineering - INFO - Adding lag features: [1, 2, 3, 7, 14, 21, 28]
+2025-09-30 19:43:06 - src.data.feature_engineering - INFO - Added 7 lag features
+2025-09-30 19:43:06 - src.data.feature_engineering - INFO - Adding change features
+2025-09-30 19:43:06 - src.data.feature_engineering - INFO - Added change features
+2025-09-30 19:43:06 - src.data.feature_engineering - INFO - Feature engineering complete: added 42 features
+2025-09-30 19:43:06 - src.data.feature_engineering - INFO - Final shape: (1208, 49)
+2025-09-30 19:43:06 - src.data.feature_engineering - INFO - Removing rows with NaN values from feature engineering
+2025-09-30 19:43:06 - src.data.feature_engineering - INFO - Found NaN values in 15 columns: ['patients_3d_avg', 'patients_3d_std', 'patients_14d_avg', 'patients_14d_std', 'patients_30d_avg']...
+2025-09-30 19:43:06 - src.data.feature_engineering - INFO - Rows with NaN: 28/1208 (2.3%)
+2025-09-30 19:43:06 - src.data.feature_engineering - INFO - Removed 28 rows with NaN values
+2025-09-30 19:43:06 - src.data.feature_engineering - INFO - Remaining rows: 1180

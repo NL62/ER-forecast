@@ -1,0 +1,380 @@
+{
+  "dashboard": {
+    "title": "Model Performance",
+    "tags": ["mlops", "models", "performance"],
+    "timezone": "browser",
+    "schemaVersion": 16,
+    "version": 0,
+    "refresh": "1m",
+    "panels": [
+      {
+        "id": 1,
+        "title": "MAE by Horizon (Test Set)",
+        "type": "timeseries",
+        "gridPos": {"h": 10, "w": 24, "x": 0, "y": 0},
+        "targets": [
+          {
+            "expr": "model_mae_by_horizon{dataset=\"test\"}",
+            "legendFormat": "Horizon {{horizon}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "smooth",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "showPoints": "always"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 8, "color": "yellow"},
+                {"value": 12, "color": "red"}
+              ]
+            }
+          }
+        },
+        "options": {
+          "tooltip": {
+            "mode": "multi"
+          },
+          "legend": {
+            "displayMode": "table",
+            "placement": "right",
+            "calcs": ["lastNotNull", "min", "max"]
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Current MAE by Horizon",
+        "type": "bargauge",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 10},
+        "targets": [
+          {
+            "expr": "model_mae_by_horizon{dataset=\"test\"}",
+            "legendFormat": "H{{horizon}}",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "orientation": "horizontal",
+          "displayMode": "gradient",
+          "showUnfilled": true
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "min": 0,
+            "max": 20,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 8, "color": "yellow"},
+                {"value": 12, "color": "red"}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "RMSE by Horizon",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 10},
+        "targets": [
+          {
+            "expr": "model_rmse_by_horizon{dataset=\"test\"}",
+            "legendFormat": "Horizon {{horizon}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "linear",
+              "fillOpacity": 10
+            }
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "Confidence Interval Coverage by Horizon",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 18},
+        "targets": [
+          {
+            "expr": "model_coverage_by_horizon{dataset=\"test\"} * 100",
+            "legendFormat": "Horizon {{horizon}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100,
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "linear",
+              "fillOpacity": 10
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 85, "color": "yellow"},
+                {"value": 90, "color": "green"}
+              ]
+            }
+          }
+        },
+        "options": {
+          "tooltip": {
+            "mode": "multi"
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "Average Interval Width by Horizon",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 18},
+        "targets": [
+          {
+            "expr": "model_interval_width_by_horizon{dataset=\"test\"}",
+            "legendFormat": "Horizon {{horizon}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "linear",
+              "fillOpacity": 10
+            }
+          }
+        }
+      },
+      {
+        "id": 6,
+        "title": "Training Duration by Horizon",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 26},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(training_duration_seconds_bucket[1h]))",
+            "legendFormat": "Horizon {{horizon}} (p95)",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.50, rate(training_duration_seconds_bucket[1h]))",
+            "legendFormat": "Horizon {{horizon}} (p50)",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s",
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "linear",
+              "fillOpacity": 10
+            }
+          }
+        }
+      },
+      {
+        "id": 7,
+        "title": "Prediction Duration",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 26},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(prediction_duration_seconds_bucket[1h]))",
+            "legendFormat": "p95",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.50, rate(prediction_duration_seconds_bucket[1h]))",
+            "legendFormat": "p50",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s",
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "linear",
+              "fillOpacity": 10
+            }
+          }
+        }
+      },
+      {
+        "id": 8,
+        "title": "Optuna Trials per Training",
+        "type": "stat",
+        "gridPos": {"h": 6, "w": 12, "x": 0, "y": 34},
+        "targets": [
+          {
+            "expr": "optuna_trials_count",
+            "legendFormat": "Horizon {{horizon}}",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "textMode": "value_and_name"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short"
+          }
+        }
+      },
+      {
+        "id": 9,
+        "title": "Total Predictions Generated",
+        "type": "stat",
+        "gridPos": {"h": 6, "w": 12, "x": 12, "y": 34},
+        "targets": [
+          {
+            "expr": "sum(predictions_generated_total)",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "textMode": "value_and_name"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short"
+          }
+        }
+      },
+      {
+        "id": 10,
+        "title": "Model Registrations by Stage",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 40},
+        "targets": [
+          {
+            "expr": "rate(mlflow_model_registrations_total[1h])",
+            "legendFormat": "{{stage}} - H{{horizon}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "drawStyle": "bars",
+              "lineInterpolation": "linear"
+            }
+          }
+        }
+      },
+      {
+        "id": 11,
+        "title": "Model Promotions to Production",
+        "type": "stat",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 40},
+        "targets": [
+          {
+            "expr": "sum(mlflow_model_promotions_total)",
+            "legendFormat": "Total Promotions",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "textMode": "value_and_name"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short"
+          }
+        }
+      },
+      {
+        "id": 12,
+        "title": "MAE Comparison: Train vs Val vs Test",
+        "type": "bargauge",
+        "gridPos": {"h": 10, "w": 24, "x": 0, "y": 48},
+        "targets": [
+          {
+            "expr": "model_mae_by_horizon{horizon=\"1\"}",
+            "legendFormat": "H1 - {{dataset}}",
+            "refId": "A"
+          },
+          {
+            "expr": "model_mae_by_horizon{horizon=\"2\"}",
+            "legendFormat": "H2 - {{dataset}}",
+            "refId": "B"
+          },
+          {
+            "expr": "model_mae_by_horizon{horizon=\"3\"}",
+            "legendFormat": "H3 - {{dataset}}",
+            "refId": "C"
+          },
+          {
+            "expr": "model_mae_by_horizon{horizon=\"4\"}",
+            "legendFormat": "H4 - {{dataset}}",
+            "refId": "D"
+          },
+          {
+            "expr": "model_mae_by_horizon{horizon=\"5\"}",
+            "legendFormat": "H5 - {{dataset}}",
+            "refId": "E"
+          },
+          {
+            "expr": "model_mae_by_horizon{horizon=\"6\"}",
+            "legendFormat": "H6 - {{dataset}}",
+            "refId": "F"
+          },
+          {
+            "expr": "model_mae_by_horizon{horizon=\"7\"}",
+            "legendFormat": "H7 - {{dataset}}",
+            "refId": "G"
+          }
+        ],
+        "options": {
+          "orientation": "horizontal",
+          "displayMode": "gradient",
+          "showUnfilled": true
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 8, "color": "yellow"},
+                {"value": 12, "color": "red"}
+              ]
+            }
+          }
+        }
+      }
+    ]
+  }
+}
+
+

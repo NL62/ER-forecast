@@ -1,0 +1,27 @@
+# Grafana Data Sources Configuration
+apiVersion: 1
+
+datasources:
+  # Prometheus data source for metrics
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: true
+    jsonData:
+      timeInterval: "15s"
+
+  # PostgreSQL data source for application database
+  - name: PostgreSQL-ERForecast
+    type: postgres
+    access: proxy
+    url: postgres:5432
+    database: er_forecast_db
+    user: dashboard_user
+    secureJsonData:
+      password: 'dashboard_secure_pwd_2024'
+    editable: true
+    jsonData:
+      sslmode: 'disable'
+      postgresVersion: 1500
